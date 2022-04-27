@@ -1,10 +1,23 @@
-import { coordsAtom } from "atom/coords";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { navAtom, selectComapnyName } from "atom/nav";
-import styled from "styled-components";
-import { darken } from "polished";
-import { userAtom } from "atom/user";
-import { AiOutlineUser } from "react-icons/ai";
+import { coordsAtom } from 'atom/coords';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { navAtom, selectComapnyName } from 'atom/nav';
+import styled from 'styled-components';
+import { darken } from 'polished';
+import { userAtom } from 'atom/user';
+import { AiOutlineUser } from 'react-icons/ai';
+
+type Props = {
+  name: string;
+  explanation: string;
+  companyName: string;
+  companyLocation: string;
+  profileImg: string | null | undefined;
+  type: string | undefined;
+  coords: string;
+  userSelector: (coords: string) => void;
+  tagImg: string;
+};
+
 interface INavElementSection {
   isSelectedItem: boolean;
 }
@@ -18,8 +31,8 @@ const NavElement = ({
   type,
   coords,
   userSelector,
-  tagImg,
-}: any) => {
+  tagImg = '',
+}: Props) => {
   const selectElement = useRecoilValue(coordsAtom);
   const member = useRecoilValue(userAtom);
   const setNavDeps = useSetRecoilState(navAtom);
@@ -39,7 +52,12 @@ const NavElement = ({
       }}
       isSelectedItem={isSelectedItem}
     >
-      <CompanyName>{companyName}</CompanyName>
+      <ComapnyViewWrapper>
+        <CompanyName>
+          {companyName}
+          <ComapnyTagImg src={tagImg} alt='' />
+        </CompanyName>
+      </ComapnyViewWrapper>
       <CompanyLocation>{companyLocation}</CompanyLocation>
       <WorkingMemberWrapper>
         <AiOutlineUser />
@@ -58,14 +76,19 @@ const NavElementSection = styled.section<INavElementSection>`
   cursor: pointer;
   padding: 10px;
   background-color: ${(props) =>
-    props.isSelectedItem ? `${darken(0.05, "#fff")}` : "#fff"};
+    props.isSelectedItem ? `${darken(0.05, '#fff')}` : '#fff'};
 
   &:hover {
     background-color: ${(props) =>
       props.isSelectedItem
-        ? `${darken(0.05, "#fff")}`
-        : `${darken(0.02, "#fff")}`};
+        ? `${darken(0.05, '#fff')}`
+        : `${darken(0.02, '#fff')}`};
   }
+`;
+
+const ComapnyViewWrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const CompanyName = styled.div`
@@ -73,6 +96,19 @@ const CompanyName = styled.div`
   color: #0068c3;
   font-weight: 700;
   letter-spacing: -1px;
+  position: relative;
+  /* display: flex; */
+`;
+
+const ComapnyTagImg = styled.img`
+  /* height: 31px; */
+  margin-left: 5px;
+  z-index: 1;
+  max-width: 50px;
+  max-height: 26px;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
 `;
 
 const CompanyLocation = styled.div`
